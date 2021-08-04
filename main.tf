@@ -9,6 +9,67 @@ terraform {
 
 provider "docker" {}
 
+# generate random string
+resource "random_string" "random1" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
+# generate random string
+resource "random_string" "random2" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
+# Find the latest node-red precise image.
+resource "docker_image" "nodered_image" {
+  name = "nodered/node-red:latest"
+}
+
+# Start a container
+resource "docker_container" "nodered_container1" {
+  name  = join("-", ["nodered", random_string.random1.result])
+  image = docker_image.nodered_image.latest
+  ports {
+    internal = 1880
+    # external = 1880
+  }
+}
+
+resource "docker_container" "nodered_container2" {
+  name  = join("-", ["nodered", random_string.random2.result])
+  image = docker_image.nodered_image.latest
+  ports {
+    internal = 1880
+    # external = 1880
+  }
+}
+
+
+
+
+
+# output
+output "node-red-ip-address" {
+  value       = join(":", [docker_container.nodered_container1.ip_address, docker_container.nodered_container1.ports[0].external])
+  description = "The ip address of the container"
+}
+
+output "node-red-name1" {
+  value       = docker_container.nodered_container1.name
+  description = "The name of the nodered container"
+}
+
+output "node-red-name2" {
+  value       = docker_container.nodered_container2.name
+  description = "The name of the nodered container"
+}
+
+
+
+
 # resource "docker_image" "nginx" {
 #   name         = "nginx:latest"
 # }
@@ -22,27 +83,7 @@ provider "docker" {}
 #   }
 # }
 
-# Find the latest node-red precise image.
-resource "docker_image" "nodered_image" {
-  name = "nodered/node-red:latest"
-}
-
-# Start a container
-resource "docker_container" "nodered_container" {
-  name  = "nodered"
-  image = docker_image.nodered_image.latest
-  ports {
-    internal = 1880
-    external = 1880
-  }
-}
-
-output "ip-address" {
-    value = join(":", [docker_container.nodered_container.ip_address, docker_container.nodered_container.ports[0].external])
-    description = "The ip address of the container"
-}
-
-output "container-name" {
-    value = docker_container.nodered_container.name
-    description = "The name of the container"
-}
+# output "nginx-ip-address" {
+#   value = join(":", [docker_container.nginx.ip_address, docker_container.nginx.ports[0].external])
+#   description = "The ip of the nginx container"
+# }
