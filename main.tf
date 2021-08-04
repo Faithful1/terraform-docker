@@ -9,6 +9,26 @@ terraform {
 
 provider "docker" {}
 
+variable "ext_port" {
+  type = number
+  default = 1880
+}
+
+variable "int_port" {
+  type = number
+  default = 1880
+}
+
+variable "container_count" {
+  type = number
+  default = 1
+}
+
+variable "random_count" {
+  type = number
+  default = 1
+}
+
 # Find the latest node-red precise image.
 resource "docker_image" "nodered_image" {
   name = "nodered/node-red:latest"
@@ -16,7 +36,7 @@ resource "docker_image" "nodered_image" {
 
 # generate random string
 resource "random_string" "random" {
-  count = 2
+  count = var.random_count
   length  = 4
   special = false
   upper   = false
@@ -24,12 +44,12 @@ resource "random_string" "random" {
 
 # Start a container
 resource "docker_container" "nodered_container" {
-  count = 2
+  count = var.container_count
   name  = join("-", ["nodered", random_string.random[count.index].result])
   image = docker_image.nodered_image.latest
   ports {
-    internal = 1880
-    # external = 1880
+    internal = var.int_port
+    external = var.ext_port
   }
 }
 
