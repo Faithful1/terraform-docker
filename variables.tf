@@ -1,6 +1,5 @@
 variable "ext_port" {
   type = number
-  sensitive = true
 
   validation {
     condition = var.ext_port <= 65535 && var.ext_port > 0
