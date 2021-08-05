@@ -1,8 +1,8 @@
-variable "env" {
-  type        = string
-  default     = "dev"
-  description = "Env to deploy to"
-}
+# variable "env" {
+#   type        = string
+#   default     = "dev"
+#   description = "Env to deploy to"
+# }
 
 variable "image" {
   type = map(any)
@@ -28,7 +28,7 @@ variable "ext_port" {
 }
 
 locals {
-  container_count = length(lookup(var.ext_port, var.env))
+  container_count = length(lookup(var.ext_port, terraform.workspace))
 }
 
 variable "int_port" {
