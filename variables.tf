@@ -1,10 +1,10 @@
 variable "ext_port" {
   type = list
 
-  # validation {
-  #   condition = var.ext_port <= 65535 && var.ext_port > 0
-  #   error_message = "The external port must be valid port range 0 - 65535."
-  # }
+  validation {
+    condition = max(var.ext_port...) <= 65535 && min(var.ext_port...) > 0
+    error_message = "The external port must be valid port range 0 - 65535."
+  }
 }
 
 variable "int_port" {
@@ -22,5 +22,5 @@ variable "int_port" {
 # }
 
 locals {
-  container_count = length(var.ext_port) + 1
+  container_count = length(var.ext_port)
 }
