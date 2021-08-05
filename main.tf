@@ -22,7 +22,7 @@ resource "docker_image" "nodered_image" {
 
 # generate random string
 resource "random_string" "random" {
-  count = local.container_count
+  count   = local.container_count
   length  = 4
   special = false
   upper   = false
@@ -35,11 +35,11 @@ resource "docker_container" "nodered_container" {
   image = docker_image.nodered_image.latest
   ports {
     internal = var.int_port
-    external = var.ext_port[count.index]
+    external = lookup(var.ext_port, var.env)[count.index]
   }
   volumes {
     container_path = "/data"
-    host_path = "${path.cwd}/noderedvol"
+    host_path      = "${path.cwd}/noderedvol"
   }
 }
 
