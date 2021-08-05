@@ -1,3 +1,18 @@
+variable "env" {
+  type = string
+  default = "dev"
+  description = "Env to deploy to"
+}
+
+variable "image" {
+  type = map
+  default = {
+    dev = "nodered/node-red:latest"
+    prod = "nodered/node-red:latest-minimal"
+  }
+  description = "image for container"
+}
+
 variable "ext_port" {
   type = list
 
@@ -15,11 +30,6 @@ variable "int_port" {
   #   error_message = "The internal port must be 1880."
   # }
 }
-
-# variable "container_count" {
-#   type = number
-#   default = 3
-# }
 
 locals {
   container_count = length(var.ext_port)

@@ -17,7 +17,7 @@ resource "null_resource" "dockervol" {
 
 # Find the latest node-red precise image.
 resource "docker_image" "nodered_image" {
-  name = "nodered/node-red:latest"
+  name = lookup(var.image, "dev")
 }
 
 # generate random string
@@ -42,9 +42,6 @@ resource "docker_container" "nodered_container" {
     host_path = "${path.cwd}/noderedvol"
   }
 }
-
-
-
 
 
 
